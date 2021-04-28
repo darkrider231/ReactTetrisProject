@@ -17,22 +17,16 @@ import StartButton from './StartButton';
 const Tetris = () => {
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
-  const [counter, setCounter] = React.useState(300);
-
+  const [counter, setCounter] = useState(300);
+ 
+  // Timer Countdown
   React.useEffect(() => {
     const timer =
       counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
-    if (timer === 0) {
-      clearInterval(this.timer);
-      setStage(createStage());
-      setDropTime(1000);
-      resetPlayer();
-      setScore(0);
-      setLevel(0);
-      setRows(0);
-      setGameOver(false);
-      setCounter(300);
-    }
+      if (counter === 0) {
+        setGameOver(true);
+        setDropTime(null);
+      }
     return () => clearInterval(timer);
   }, [counter]);
 
@@ -60,6 +54,8 @@ const Tetris = () => {
     }
   };
 
+
+
   const startGame = () => {
     // Reset everything
     setStage(createStage());
@@ -69,7 +65,7 @@ const Tetris = () => {
     setLevel(0);
     setRows(0);
     setGameOver(false);
-    setCounter(180);
+    setCounter(300);
   };
 
   const drop = () => {
