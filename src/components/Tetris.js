@@ -13,6 +13,8 @@ import { useGameStatus } from '../hooks/useGameStatus';
 import Stage from './Stage';
 import Display from './Display';
 import StartButton from './StartButton';
+import sounds from './../audio/brassorchidbobbyrichards.mp3';
+
 
 const Tetris = () => {
   const [dropTime, setDropTime] = useState(null);
@@ -20,18 +22,26 @@ const Tetris = () => {
   const [counter, setCounter] = useState(300);
   const [isActive, setIsActive] = useState(false);
 
+
   // Timer Countdown
-useEffect(() => {
-    
-    if (counter > 0 && isActive)  {
+  useEffect(() => {
+    if (counter > 0 && isActive) {
       const timer = counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
       return () => clearInterval(timer);
-    } else if (counter ===  0) {
+    } else if (counter === 0) {
       setGameOver(true);
       setDropTime(null);
-      
     }
   }, [counter, isActive]);
+
+  // Play Audio
+  function playAudio(audio) {
+    if(!isActive) {
+    const soundEffect = new Audio(audio);
+    soundEffect.play();
+    } 
+
+  }
 
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
@@ -70,6 +80,7 @@ useEffect(() => {
     setGameOver(false);
     setCounter(300);
     setIsActive(true);
+    playAudio(sounds);
   };
 
   const drop = () => {
@@ -88,6 +99,7 @@ useEffect(() => {
         console.log('GAME OVER!!!');
         setGameOver(true);
         setDropTime(null);
+
       }
       updatePlayerPos({ x: 0, y: 0, collided: true });
     }
@@ -121,6 +133,7 @@ useEffect(() => {
   };
 
   return (
+
     <StyledTetrisWrapper
       role="button"
       tabIndex="0"

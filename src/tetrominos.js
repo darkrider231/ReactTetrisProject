@@ -91,3 +91,4 @@ export const randomTetromino = () => {
 
     return TETROMINOS[randTetromino];
 }
+export default TETROMINOS;
