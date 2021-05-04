@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { createStage, checkCollision } from '../gameHelpers';
 import { StyledTetrisWrapper, StyledTetris } from './styles/StyledTetris';
@@ -18,17 +18,19 @@ const Tetris = () => {
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [counter, setCounter] = useState(60);
- 
+  const [isActive, setIsActive] = useState(false);
+
   // Timer Countdown
   React.useEffect(() => {
-    const timer =
-      counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
-      if (counter === 0) {
-        setGameOver(true);
-        setDropTime(null);
-
-      }
-    return () => clearInterval(timer);
+    
+    if (counter > 0 && isActive)  {
+      const timer = counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
+      return () => clearInterval(timer);
+    } else if (counter ===  0) {
+      setGameOver(true);
+      setDropTime(null);
+      
+    }
   }, [counter]);
 
 
@@ -67,6 +69,7 @@ const Tetris = () => {
     setRows(0);
     setGameOver(false);
     setCounter(60);
+    setIsActive(true);
   };
 
   const drop = () => {
@@ -128,7 +131,7 @@ const Tetris = () => {
         <Stage stage={stage} />
         <aside>
           {gameOver ? (
-            <Display gameOver={gameOver} text={`Game Over! FINAL SCORE: ${score}` }/>
+            <Display gameOver={gameOver} text={`Game Over! FINAL SCORE: ${score}`} />
           ) : (
               <div>
                 <Display text={`Score: ${score}`} />
@@ -137,7 +140,7 @@ const Tetris = () => {
                 <Display text={`Time:  ${counter}`} />
               </div>
             )}
-          <StartButton callback={startGame} />
+          <StartButton onClick={counter} callback={startGame} />
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>
