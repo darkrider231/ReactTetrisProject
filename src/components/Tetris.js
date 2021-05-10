@@ -13,7 +13,8 @@ import { useGameStatus } from '../hooks/useGameStatus';
 import Stage from './Stage';
 import Display from './Display';
 import StartButton from './StartButton';
-import sounds from './../audio/brassorchidbobbyrichards.mp3';
+import sounds from './../audio/tetrisremix.mp3';
+
 
 
 const Tetris = () => {
@@ -35,12 +36,16 @@ const Tetris = () => {
   }, [counter, isActive]);
 
   // Play Audio
-  function playAudio(audio) {
-    if(!isActive) {
-    const soundEffect = new Audio(audio);
-    soundEffect.play();
-    } 
-
+  function playAudio(sounds) {
+    if (!isActive && !gameOver) {
+      const soundEffect = new Audio(sounds);
+      soundEffect.play();
+      soundEffect.loop = true;
+    } else if (gameOver) {
+      const soundEffect = new Audio(sounds);
+      soundEffect.pause();
+      soundEffect.currentTime = 0;
+    }
   }
 
 
@@ -80,7 +85,9 @@ const Tetris = () => {
     setGameOver(false);
     setCounter(300);
     setIsActive(true);
-    playAudio(sounds);
+    if (playAudio) {
+      playAudio(sounds);
+    } 
   };
 
   const drop = () => {
@@ -95,11 +102,14 @@ const Tetris = () => {
       updatePlayerPos({ x: 0, y: 1, collided: false });
     } else {
       // Game over!
-      if (player.pos.y < 1) {
+      if (player.pos.y < 1 && !gameOver) {
+        
         console.log('GAME OVER!!!');
         setGameOver(true);
         setDropTime(null);
+        setIsActive(false);
 
+        
       }
       updatePlayerPos({ x: 0, y: 0, collided: true });
     }
@@ -146,13 +156,13 @@ const Tetris = () => {
           {gameOver ? (
             <Display gameOver={gameOver} text={`Game Over! FINAL SCORE: ${score}`} />
           ) : (
-              <div>
-                <Display text={`Score: ${score}`} />
-                <Display text={`rows: ${rows}`} />
-                <Display text={`Level: ${level}`} />
-                <Display text={`Time:  ${counter}`} />
-              </div>
-            )}
+            <div>
+              <Display text={`Score: ${score}`} />
+              <Display text={`rows: ${rows}`} />
+              <Display text={`Level: ${level}`} />
+              <Display text={`Time:  ${counter}`} />
+            </div>
+          )}
           <StartButton onClick={counter ? !isActive : isActive} callback={startGame} />
         </aside>
       </StyledTetris>
