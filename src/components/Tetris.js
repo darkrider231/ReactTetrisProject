@@ -13,7 +13,6 @@ import { useGameStatus } from '../hooks/useGameStatus';
 import Stage from './Stage';
 import Display from './Display';
 import StartButton from './StartButton';
-import sounds from './../audio/tetrisremix.mp3';
 
 
 
@@ -32,21 +31,10 @@ const Tetris = () => {
     } else if (counter === 0) {
       setGameOver(true);
       setDropTime(null);
+      
     }
   }, [counter, isActive]);
 
-  // Play Audio
-  function playAudio(sounds) {
-    if (!isActive && !gameOver) {
-      const soundEffect = new Audio(sounds);
-      soundEffect.play();
-      soundEffect.loop = true;
-    } else if (gameOver) {
-      const soundEffect = new Audio(sounds);
-      soundEffect.pause();
-      soundEffect.currentTime = 0;
-    }
-  }
 
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
@@ -85,9 +73,6 @@ const Tetris = () => {
     setGameOver(false);
     setCounter(300);
     setIsActive(true);
-    if (playAudio) {
-      playAudio(sounds);
-    } 
   };
 
   const drop = () => {
@@ -107,8 +92,7 @@ const Tetris = () => {
         console.log('GAME OVER!!!');
         setGameOver(true);
         setDropTime(null);
-        setIsActive(false);
-
+        setIsActive(false); 
         
       }
       updatePlayerPos({ x: 0, y: 0, collided: true });
